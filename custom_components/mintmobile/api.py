@@ -93,6 +93,12 @@ class MintMobile:
             "channel": "web-am",
             "origin": "https://my.mintmobile.com",
             "referer": "https://my.mintmobile.com/",
+            "sec-ch-ua": '"Microsoft Edge";v="149", "Chromium";v="149", "Not)A;Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0",
         }
 
@@ -160,6 +166,12 @@ class MintMobile:
             "channel": "web-am",
             "origin": "https://my.mintmobile.com",
             "referer": "https://my.mintmobile.com/",
+            "sec-ch-ua": '"Microsoft Edge";v="149", "Chromium";v="149", "Not)A;Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0",
         }
 
@@ -183,7 +195,10 @@ class MintMobile:
             "types": ["data"],
             "subscriberType": "PHONE",
         }
-        usage_headers = {**headers, "content-type": "application/json"}
+        usage_headers = {
+            **headers,
+            "content-type": "application/json",
+        }
         async with self.session.post(usage_url, json=usage_body, headers=usage_headers) as r:
             if r.status != 200:
                 raise Exception(f"Failed to fetch usage: {r.status}")
