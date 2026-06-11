@@ -156,6 +156,20 @@ class MintMobile:
         return await self.async_login()
 
     async def async_get_all_data_remaining(self):
+        """Retrieve account details, plans, usage, and multiline data with retry fallback for stale tokens."""
+        try:
+            return await self._async_get_all_data_remaining_internal()
+        except Exception as e:
+            if "403" in str(e) or "401" in str(e):
+                _LOGGER.info("Authentication expired or forbidden (403/401). Forcing a fresh login...")
+                self.token = None
+                self.refresh_token = None
+                self.expires_at = None
+                if await self.async_ensure_valid_session():
+                    return await self._async_get_all_data_remaining_internal()
+            raise
+
+    async def _async_get_all_data_remaining_internal(self):
         """Retrieve account details, plans, usage, and multiline data."""
         if not await self.async_ensure_valid_session():
             raise Exception("Authentication failed")
@@ -177,8 +191,12 @@ class MintMobile:
 
         # 1. Fetch Account Details
         account_url = f"https://mint-gateway.mintmobile.com/v1/mint/account/{self.id}?&subscriberType=PHONE"
+        _LOGGER.debug("Fetching account info from URL: %s", account_url)
+        _LOGGER.debug("Request headers: %s", {k: (v if k.lower() != "authorization" else "Bearer ***") for k, v in headers.items()})
         async with self.session.get(account_url, headers=headers) as r:
             if r.status != 200:
+                resp_text = await r.text()
+                _LOGGER.error("Failed to fetch account info. Status: %s, Body: %s", r.status, resp_text[:500])
                 raise Exception(f"Failed to fetch account info: {r.status}")
             account_data = await r.json()
 
