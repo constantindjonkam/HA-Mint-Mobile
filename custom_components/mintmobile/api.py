@@ -183,8 +183,8 @@ class MintMobile:
 
         # 1. Fetch Account Details
         account_url = f"https://mint-gateway.mintmobile.com/v1/mint/account/{self.id}?&subscriberType=PHONE"
-        _LOGGER.debug("Fetching account info from URL: %s", account_url)
-        _LOGGER.debug("Request headers: %s", {k: (v if k.lower() != "authorization" else "Bearer ***") for k, v in headers.items()})
+        _LOGGER.warning("Fetching account info from URL: %s", account_url)
+        _LOGGER.warning("Request headers: %s", {k: (v if k.lower() != "authorization" else "Bearer ***") for k, v in headers.items()})
         async with self.session.get(account_url, headers=headers) as r:
             if r.status != 200:
                 resp_text = await r.text()
